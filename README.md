@@ -14,7 +14,7 @@ vote on blockchain
   a. 確認選號對應到的account
   b. 輸入選號進行投票
   d. 投票完成
-  *可登入其他accounts進行投票
+ *可登入其他accounts進行投票
 
 4. 開票部分:
   a. 由發起投票的人結束投票
