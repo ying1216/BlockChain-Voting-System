@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>BlockChainVote</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <style>
+  /* Make the image fully responsive */
+  .carousel-inner img {
+      width: 100%;
+      
+  }
+  footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+  .flex-center {
+  display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <!-- Brand/logo -->
+  <a class="navbar-brand" href="#login">Login</a>
+  
+  <!-- Links -->
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="#owner">Vote Owner</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#votee">Vote</a>
+    </li>
+  </ul>
+</nav>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+    <h1><img src= "b1.png" width="100" height="100">Use the blockchain to build your vote</h1>      
+    <pre>              In this website, we use the block chain to build up your vote.</pre>
+    </div>
+</div>
+
+<div class="container">
+    <pre>構想: 取代紙本投票，建立快速開票，但仍然是由中選會中心化來控制投票過程
+        1.開啟ganache與網頁，部署合約
+        2.建立投票部分: a.為選舉取名 b.建立候選人 c.開始投票
+        3.投票部分: a. 確認選號對應到的account b. 輸入選號進行投票 d. 投票完成
+        4.開票部分: a. 由發起投票的人結束投票 b. 輸入選號確認票數
+        想要增加功能: a. 印出開票結果，最高票是誰等... b. 在前端將候選人account轉為候選人名字 c.
+        問題: 投票過程可被外部解得投給誰的內容 解決: 建立私有鏈，直到開票後才供外部檢視，每個人可以記住自己的account，開票時確認自己的票有被算進。
+    </pre>      
+</div>
+
+</br></br>
+
+<h1 class="container" id="login">使用者登入</h1>
+</br>
+<div class="container shadow p-4 mb-4 bg-white">
+  <h2 id="contractAddress">投票合約地址:</h2>
+    <div class="form-group">
+      <label>合約:</label>
+      <input type="text" class="form-control" id="deployedContractAddressInput">
+    </div>
+    <button type="submit" class="btn btn-primary" id="loadDeployedContractButton">載入既有合約</button>
+    <button type="submit" class="btn btn-primary" id="deployNewContractButton">部署新合約</button>
+</div>
+
+</br>
+</br>
+
+<div class="container">
+ <div class="row">
+  <div class="col-sm-6 shadow p-4 mb-4 bg-white" >
+  <h2>帳戶登入</h2>
+  
+    <div class="form-group">
+      <label >選擇欲登入帳戶</label>
+      <select class="form-control" id="whoami"> </select>
+    </div>
+    <button type="submit" class="btn btn-primary" id="whoamiButton">登入</button>
+    <button type="submit" class="btn btn-primary" id="copyButton">複製</button>
+  
+  </div>
+  <hr class="d-sm-none">
+  <div class="col-sm-6 shadow p-4 mb-4 bg-white">
+  <h3 id="accountStatus">帳戶狀態</h3>
+  <h5 id="nowAddress">目前帳號: </h5>
+  <h5 id="ethBalance">以太帳戶餘額 (wei): </h5>
+  <button type="submit" class="btn btn-primary" id="update">更新帳戶</button>
+  </div>
+ </div>
+</div>
+
+<hr class="container">
+
+<h1 class="container" id="owner">開始建立投票</h1>
+</br>
+
+<div class="container">
+ <div class="row">
+  <div class="col-sm-6 shadow p-4 mb-4 bg-white">
+  <h2 id="createElection">建立投票</h2>
+    <div class="form-group">
+      <label>輸入本次投票主題:</label>
+      <input type="text" class="form-control" id="createName">
+    </div>
+    <button type="submit" class="btn btn-primary" id="createElectionButton">創建</button>
+    <h5 id="createEReturn"></h5>
+  </div>
+
+  <div class="col-sm-6 shadow p-4 mb-4 bg-white">
+  <h2>新增候選人</h2>
+    <div class="form-group">
+      <label>輸入候選人選號:</label>
+      <input type="number" class="form-control" id="createCandidateID1">
+      <label>輸入候選人地址:</label>
+      <input type="text" class="form-control" id="createCandidateAccount1">
+    </div>
+    <button type="submit" class="btn btn-primary" id="createCandidateButton">新增</button>
+    <h5 id="createCReturn"></h5>
+  </div>
+ </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 shadow p-4 mb-4 bg-white">  
+      <button type="submit" class="btn btn-primary" id="startToVoteButton" align="center">開始投票</button>
+    </div>
+
+    <div class="col-sm-6 shadow p-4 mb-4 bg-white ">
+      <button type="submit" class="btn btn-primary" id="endToVoteButton">結束投票</button>
+    </div>
+  </div>
+</div>
+
+<div class="container shadow p-4 mb-4 bg-white">
+  <h2>開票</h2>
+    <div class="form-group">
+      <label>輸入候選人選號:</label>
+      <input type="number" class="form-control" id="open">
+      <h5 id="counts"></h5>
+    </div>
+    <button type="submit" class="btn btn-primary" id="openButton">開票</button>
+</div>
+<hr class= "container">
+
+<h1 class="container" id="votee">投票</h1>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 shadow shadow p-4 mb-4 bg-white">
+      <h2>選舉名稱</h2>
+        <div class="form-group">
+          <h5 id="electionName"></h5>
+        </div>
+    <button type="submit" class="btn btn-primary" id="electionNameButton">執行</button>
+    </div>
+
+    <div class="col-sm-6 shadow shadow p-4 mb-4 bg-white">
+      <h2>候選人查詢</h2>
+        <div class="form-group">
+        <label>輸入候選人選號:</label>
+        <input type="number" class="form-control" id="idToCandidate">
+        <h5 id="idToCandidateAccount"></h5>
+        </div>
+    <button type="submit" class="btn btn-primary" id="idToCandidateButton">執行</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="container shadow p-4 mb-4 bg-white">
+  <h2>投票</h2>
+    <div class="form-group">
+      <label>輸入候選人選號:</label>
+      <input type="number" class="form-control" id="vote1">
+      <h5 id="voteReturn"></h5>
+    </div>
+    <button type="submit" class="btn btn-primary" id="voteButton">執行</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+</br>
+</br></br>
+</br></br>
+</br>
+</br>
+</br>
+<div class="container">
+			<h3>活動紀錄</h3>
+			<pre id="logger"></pre>
+		</div>
+
+
+
+
+<footer class="container-fluid text-center">
+  <p>BlockChain Vote</p>
+</footer>
+
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+	<script src="js/web3.min.js"></script>
+	<script src="js/Vote.js"></script>
+	<script src="js/index.js"></script>
+
+
+</body>
+</html>
