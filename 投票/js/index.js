@@ -88,7 +88,7 @@ deployNewContractButton.on('click', function () {
 whoamiButton.on('click', function () {
     console.log("1");
 	nowAccount = whoami.val();
-
+    console.log("2");
 	update.trigger('click')
 
 })
@@ -119,10 +119,12 @@ copyButton.on('click', function () {
 
 // 當按下更新按鍵時
 update.on('click', async function () {
+    console.log("11")
 	if (voteAddress != "") {
-        console.log("err")
+        console.log("11")
         let ethBalance = await web3.eth.getBalance(nowAccount)
         //let nowAccount1 = nowAccount;
+        console.log("22")
 		log({
             address: voteAddress,
             ethBalance: ethBalance,
@@ -130,7 +132,7 @@ update.on('click', async function () {
 		})
         log('更新帳戶資料')
         $('#ethBalance').text('以太帳戶餘額 (wei): ' + ethBalance)
-		$('#nowAddress').text('登入狀態:' + whoami.val())
+		$('#nowAddress').text('帳號:' + whoami.val())
 		
 	}
 	else {
@@ -168,7 +170,7 @@ async function newVote() {
 	if (!unlock) {
 		return;
 	}
-
+    console.log("222")
 	// 更新介面
 	waitTransactionStatus()
 
@@ -247,12 +249,15 @@ createElectionButton.on('click', async function () {
 			update.trigger('click')
 
 			// 更新介面 
-			doneTransactionStatus()
+            doneTransactionStatus()
+            $('#createName').val('')
+            $('#createEReturn').text('建立成功');
 		})
 		.on('error', function (error) {
 			log(error.toString())
 			// 更新介面 
-			doneTransactionStatus()
+            doneTransactionStatus()
+            $('#createEReturn').text('建立失敗，可能已經開始投票');
 		})
 })
 
@@ -282,12 +287,16 @@ createCandidateButton.on('click', async function () {
 			update.trigger('click')
 
 			// 更新介面 
-			doneTransactionStatus()
+            doneTransactionStatus()
+            $('#createCandidateID1').val('')
+            $('#createCandidateAccount1').val('')
+            $('#createCReturn').text('建立成功');
 		})
 		.on('error', function (error) {
 			log(error.toString())
 			// 更新介面 
-			doneTransactionStatus()
+            doneTransactionStatus()
+            $('#createCReturn').text('建立失敗，可能是已經開始投票');
 		})
 })
 
@@ -317,12 +326,14 @@ voteButton.on('click', async function () {
 			update.trigger('click')
 
 			// 更新介面 
-			doneTransactionStatus()
+            doneTransactionStatus()
+            $('#voteReturn').text('投票成功');
 		})
 		.on('error', function (error) {
 			log(error.toString())
 			// 更新介面 
-			doneTransactionStatus()
+            doneTransactionStatus()
+            $('#voteReturn').text('投票失敗，您可能重複投票');
 		})
 })
 
